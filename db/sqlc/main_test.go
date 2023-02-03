@@ -10,6 +10,7 @@ import (
 )
 
 var testQueries *Queries
+var testDB *sql.DB
 
 // TODO move const to env file
 const (
@@ -18,11 +19,12 @@ const (
 )
 
 func TestMain(m *testing.M) {
-	conn, err := sql.Open(driverName, dataSourceName)
+	var err error
+	testDB, err = sql.Open(driverName, dataSourceName)
 	if err != nil {
 		log.Fatal("cannot connect to database: ", err)
 	}
 
-	testQueries = New(conn)
+	testQueries = New(testDB)
 	os.Exit(m.Run())
 }
