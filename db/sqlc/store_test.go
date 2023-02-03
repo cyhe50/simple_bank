@@ -2,7 +2,6 @@ package db
 
 import (
 	"context"
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -72,8 +71,6 @@ func TestCreateTransferWithTxAndDeadlock(t *testing.T) {
 	toAccount := createRandomAccount(t)
 	amount := int64(10)
 
-	fmt.Printf("fromAccount.Balance: %d\n", fromAccount.Balance)
-	fmt.Printf("toAccount.Balance: %d\n", toAccount.Balance)
 	n := 10
 	errs := make(chan error)
 
@@ -86,8 +83,6 @@ func TestCreateTransferWithTxAndDeadlock(t *testing.T) {
 			toAccountID = fromAccount.ID
 		}
 
-		fmt.Printf("i = %d, fromAccountID = %d\n", i, fromAccountID)
-		fmt.Printf("i = %d, toAccountID = %d\n", i, toAccountID)
 		go func() {
 			_, err := s.TransferTx(context.Background(), transferResponseParams{
 				FromAccountID: fromAccountID,
@@ -106,8 +101,6 @@ func TestCreateTransferWithTxAndDeadlock(t *testing.T) {
 
 	updatedFromAccount, _ := s.GetAccount(context.Background(), fromAccount.ID)
 	updatedToAccount, _ := s.GetAccount(context.Background(), toAccount.ID)
-	fmt.Printf("updatedFromAccount.Balance: %d\n", updatedFromAccount.Balance)
-	fmt.Printf("updatedToAccount.Balance: %d\n", updatedToAccount.Balance)
 	require.Equal(t, fromAccount.Balance, updatedFromAccount.Balance)
 	require.Equal(t, toAccount.Balance, updatedToAccount.Balance)
 }
