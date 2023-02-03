@@ -32,6 +32,9 @@ func TestCreateTransferWithTx(t *testing.T) {
 		}()
 	}
 
+	prevFromAccountBalance := fromAccount.Balance
+	prevToAccountBalance := toAccount.Balance
+
 	//check results
 	for i := 0; i < n; i++ {
 		err := <-errs
@@ -40,9 +43,11 @@ func TestCreateTransferWithTx(t *testing.T) {
 		require.NoError(t, err)
 		require.NotEmpty(t, result)
 
-		// TODO: update account later
-		//require.Equal(t, result.FromAccount, fromAccount)
-		//require.Equal(t, result.ToAccount, toAccount)
+		require.Equal(t, result.FromAccount.ID, fromAccount.ID)
+		require.Equal(t, result.FromAccount.Balance, prevFromAccountBalance-amount)
+
+		require.Equal(t, result.ToAccount.ID, toAccount.ID)
+		require.Equal(t, result.ToAccount.Balance, prevToAccountBalance+amount)
 
 		require.Equal(t, result.FromEntry.AccountID, fromAccount.ID)
 		require.Equal(t, result.FromEntry.Amount, -amount)
@@ -53,5 +58,8 @@ func TestCreateTransferWithTx(t *testing.T) {
 		require.Equal(t, result.Transfer.FromAccountID, fromAccount.ID)
 		require.Equal(t, result.Transfer.ToAccountID, toAccount.ID)
 		require.Equal(t, result.Transfer.Amount, amount)
+
+		prevFromAccountBalance = result.FromAccount.Balance
+		prevToAccountBalance = result.ToAccount.Balance
 	}
 }
