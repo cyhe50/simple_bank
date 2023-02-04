@@ -17,11 +17,11 @@ func TestCreateTransferWithTx(t *testing.T) {
 	// run n concurrent transfer transactions
 	n := 5
 	errs := make(chan error)
-	results := make(chan transferResult)
+	results := make(chan TransferResult)
 
 	for i := 0; i < n; i++ {
 		go func() {
-			result, err := s.TransferTx(context.Background(), transferResponseParams{
+			result, err := s.TransferTx(context.Background(), TransferResponseParams{
 				FromAccountID: fromAccount.ID,
 				ToAccountID:   toAccount.ID,
 				Amount:        amount,
@@ -84,7 +84,7 @@ func TestCreateTransferWithTxAndDeadlock(t *testing.T) {
 		}
 
 		go func() {
-			_, err := s.TransferTx(context.Background(), transferResponseParams{
+			_, err := s.TransferTx(context.Background(), TransferResponseParams{
 				FromAccountID: fromAccountID,
 				ToAccountID:   toAccountID,
 				Amount:        amount,

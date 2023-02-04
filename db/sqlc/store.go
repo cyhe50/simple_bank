@@ -37,13 +37,13 @@ func (s *Store) execTx(ctx context.Context, fn func(*Queries) error) error {
 	return tx.Commit()
 }
 
-type transferResponseParams struct {
+type TransferResponseParams struct {
 	FromAccountID int64 `json:"from_account_id"`
 	ToAccountID   int64 `json:"to_account_id"`
 	Amount        int64 `json:"amount"`
 }
 
-type transferResult struct {
+type TransferResult struct {
 	Transfer    Transfer `json:"transfer"`
 	FromAccount Account  `json:"from_account"`
 	ToAccount   Account  `json:"to_account"`
@@ -53,8 +53,8 @@ type transferResult struct {
 
 // this function performs trasfer one account to another
 // it creates a transfer record, add account entries and update accounts' balance within a transaction
-func (s *Store) TransferTx(ctx context.Context, arg transferResponseParams) (transferResult, error) {
-	var result transferResult
+func (s *Store) TransferTx(ctx context.Context, arg TransferResponseParams) (TransferResult, error) {
+	var result TransferResult
 	err := s.execTx(ctx, func(q *Queries) error {
 		var err error
 
