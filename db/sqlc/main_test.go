@@ -6,21 +6,22 @@ import (
 	"os"
 	"testing"
 
+	"github.com/cyhe50/simple_bank/util"
 	_ "github.com/lib/pq"
 )
 
 var testQueries *Queries
 var testDB *sql.DB
-
-// TODO move const to env file
-const (
-	driverName     = "postgres"
-	dataSourceName = "postgresql://root:secret@localhost:5432/simple_bank?sslmode=disable"
-)
+var envConfig util.EnvConfig
 
 func TestMain(m *testing.M) {
 	var err error
-	testDB, err = sql.Open(driverName, dataSourceName)
+	envConfig, err = util.LoadConfig("../..")
+	if err != nil {
+		log.Fatal("cannot load env config: ", err)
+	}
+
+	testDB, err = sql.Open(envConfig.DriverName, envConfig.DataSourceName)
 	if err != nil {
 		log.Fatal("cannot connect to database: ", err)
 	}
