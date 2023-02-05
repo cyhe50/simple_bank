@@ -4,7 +4,7 @@ import (
 	db "github.com/cyhe50/simple_bank/db/sqlc"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
-	"github.com/go-playground/validator"
+	"github.com/go-playground/validator/v10"
 )
 
 // server serves all HTTP request
