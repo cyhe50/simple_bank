@@ -1,7 +1,11 @@
 package api
 
 import (
+	"fmt"
+
 	db "github.com/cyhe50/simple_bank/db/sqlc"
+	"github.com/cyhe50/simple_bank/token"
+	"github.com/cyhe50/simple_bank/util"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"github.com/go-playground/validator/v10"
@@ -9,13 +13,24 @@ import (
 
 // server serves all HTTP request
 type Server struct {
-	store  *db.Store
-	router *gin.Engine
+	store      *db.Store
+	router     *gin.Engine
+	tokenMaker token.Maker
+	config     util.EnvConfig
 }
 
 // NewServer creates a new HTTP request and setup routing
-func NewServer(s *db.Store) (server *Server) {
-	server = &Server{store: s}
+func NewServer(config util.EnvConfig, s *db.Store) (*Server, error) {
+	maker, err := token.NewPasetoMaker(config.TokenSymmetricKey)
+	if err != nil {
+		return nil, fmt.Errorf("cannot create token maker: %w", err)
+	}
+
+	server := &Server{
+		store:      s,
+		tokenMaker: maker,
+		config:     config,
+	}
 	router := gin.Default()
 
 	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
@@ -31,8 +46,9 @@ func NewServer(s *db.Store) (server *Server) {
 	router.GET("/accounts", server.listAccounts)
 
 	router.POST("/transfers", server.createTransfer)
+
 	server.router = router
-	return
+	return server, nil
 }
 
 // run the HTTP servcer on a specific address to start listening for API request
