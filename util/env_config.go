@@ -1,15 +1,17 @@
 package util
 
 import (
+	"time"
+
 	"github.com/spf13/viper"
 )
 
 type EnvConfig struct {
-	DriverName          string `mapstructure:"DRIVER_NAME"`
-	DataSourceName      string `mapstructure:"DATA_SOURCE_NAME"`
-	ServerAddress       string `mapstructure:"SERVER_ADDRESS"`
-	TokenSymmetricKey   string `mapstructure:"TOKEN_SYMMETRIC_KEY"`
-	AccessTokenDuration string `mapstructure:"ACCESS_TOKEN_DURATION"`
+	DriverName          string        `mapstructure:"DRIVER_NAME"`
+	DataSourceName      string        `mapstructure:"DATA_SOURCE_NAME"`
+	ServerAddress       string        `mapstructure:"SERVER_ADDRESS"`
+	TokenSymmetricKey   string        `mapstructure:"TOKEN_SYMMETRIC_KEY"`
+	AccessTokenDuration time.Duration `mapstructure:"ACCESS_TOKEN_DURATION"`
 }
 
 func LoadConfig(path string) (config EnvConfig, err error) {

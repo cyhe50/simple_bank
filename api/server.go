@@ -31,15 +31,21 @@ func NewServer(config util.EnvConfig, s *db.Store) (*Server, error) {
 		tokenMaker: maker,
 		config:     config,
 	}
-	router := gin.Default()
 
 	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
 		v.RegisterValidation("currency", validCurrency)
 	}
 
-	//add router later
+	server.setupRouter()
+	return server, nil
+}
+
+func (server *Server) setupRouter() {
+	router := gin.Default()
+
 	router.POST("/users", server.createUser)
 	router.GET("/users/:username", server.getUser)
+	router.POST("/users/login", server.loginUser)
 
 	router.POST("/accounts", server.createAccount)
 	router.GET("/accounts/:id", server.getAccount)
@@ -48,7 +54,6 @@ func NewServer(config util.EnvConfig, s *db.Store) (*Server, error) {
 	router.POST("/transfers", server.createTransfer)
 
 	server.router = router
-	return server, nil
 }
 
 // run the HTTP servcer on a specific address to start listening for API request
